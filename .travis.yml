@@ -1,9 +1,12 @@
 ---
 language: python
-os:
-  - linux
-  - osx
+
 python: "2.7"
+
+matrix:
+  include:
+    - os: linux
+    - os: osx
 
 before_install:
   # install libxml dependency binaries
