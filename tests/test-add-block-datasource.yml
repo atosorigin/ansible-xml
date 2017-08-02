@@ -1,0 +1,93 @@
+---
+  - name: Setup test fixture
+    copy:
+      src: fixtures/ansible-xml-datasources.xml
+      dest: /tmp/ansible-xml-datasources.xml
+
+  - name: Get count of datasources
+    xml:
+      path: /tmp/ansible-xml-datasources.xml
+      xpath: /datasources/datasource[@jndi-name="java:jboss/datasources/DABAG_CI02"]
+      count: yes
+    register: hits
+
+  - assert:
+      that:
+        - hits.count == 0
+
+  - name: Add block
+    xml:
+      path: /tmp/ansible-xml-datasources.xml
+      xpath: /datasources
+      add_block: |
+        <datasource jndi-name="java:jboss/datasources/DABAG_CI02" pool-name="DABAG_CI02_DS" enabled="true" use-java-context="true">
+          <connection-url>jdbc:oracle:thin:@RU1-CFT02-DB:1521/PDBCFT02</connection-url>
+          <driver>oracle</driver>
+          <pool>
+            <min-pool-size>10</min-pool-size>
+            <max-pool-size>20</max-pool-size>
+            <prefill>true</prefill>
+          </pool>
+          <security>
+            <user-name>DABAG_CI02</user-name>
+            <password>DABAG_CI02</password>
+          </security>
+          <validation>
+            <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker"/>
+            <validate-on-match>true</validate-on-match>
+            <stale-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleStaleConnectionChecker"/>
+            <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter"/>
+          </validation>
+        </datasource>
+    when: hits.count == 0
+
+  - name: Get count of datasources
+    xml:
+      path: /tmp/ansible-xml-datasources.xml
+      xpath: /datasources/datasource[@jndi-name="java:jboss/datasources/DABAG_CI02"]
+      count: yes
+    register: hits
+
+  - assert:
+      that:
+        - hits.count == 1
+
+  - name: Add block
+    xml:
+      path: /tmp/ansible-xml-datasources.xml
+      xpath: /datasources
+      add_block: |
+        <datasource jndi-name="java:jboss/datasources/DABAG_CI02" pool-name="DABAG_CI02_DS" enabled="true" use-java-context="true">
+          <connection-url>jdbc:oracle:thin:@RU1-CFT02-DB:1521/PDBCFT02</connection-url>
+          <driver>oracle</driver>
+          <pool>
+            <min-pool-size>10</min-pool-size>
+            <max-pool-size>20</max-pool-size>
+            <prefill>true</prefill>
+          </pool>
+          <security>
+            <user-name>DABAG_CI02</user-name>
+            <password>DABAG_CI02</password>
+          </security>
+          <validation>
+            <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker"/>
+            <validate-on-match>true</validate-on-match>
+            <stale-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleStaleConnectionChecker"/>
+            <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter"/>
+          </validation>
+        </datasource>
+    when: hits.count == 0
+
+  - name: Get count of datasources
+    xml:
+      path: /tmp/ansible-xml-datasources.xml
+      xpath: /datasources/datasource[@jndi-name="java:jboss/datasources/DABAG_CI02"]
+      count: yes
+    register: hits
+
+  - assert:
+      that:
+        - hits.count == 1
+
+  - name: Test expected result
+    command: diff results/test-add-block.xml /tmp/ansible-xml-beers.xml
