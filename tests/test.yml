@@ -7,6 +7,7 @@
     - ../..
 
   tasks:
+    - include: test-add-block.yml
     - include: test-add-children-elements.yml
     - include: test-add-children-from-groupvars.yml
     - include: test-add-children-with-attributes.yml

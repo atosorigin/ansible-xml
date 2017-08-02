@@ -320,6 +320,15 @@ def add_target_children(module, tree, xpath, namespaces, children, in_type):
     else:
         finish(module, tree, xpath, namespaces)
 
+def add_target_block(module, tree, xpath, namespaces, block):
+    if is_node(tree, xpath, namespaces):
+        for node in tree.xpath(xpath, namespaces=namespaces):
+            if not module.check_mode:
+                node.append(etree.fromstring(block))
+        finish(module, tree, xpath, namespaces, changed=True)
+    else:
+        finish(module, tree, xpath, namespaces)
+
 _ident = "[a-zA-Z-][a-zA-Z0-9_\-\.]*"
 _nsIdent = _ident + "|" + _ident + ":" + _ident
 # Note: we can't reasonably support the 'if you need to put both ' and " in a string, concatenate
@@ -636,6 +645,7 @@ def main():
             attribute=dict(),
             add_children=dict(type='list'),
             set_children=dict(type='list'),
+            add_block=dict(type='str'),
             count=dict(type='bool', default=False),
             print_match=dict(type='bool', default=False),
             pretty_print=dict(type='bool', default=False),
@@ -646,10 +656,14 @@ def main():
         mutually_exclusive=[
             ['value', 'set_children'],
             ['value', 'add_children'],
+            ['value', 'add_block'],
             ['set_children', 'add_children'],
+            ['set_children', 'add_block'],
+            ['add_children', 'add_block'],
             ['path', 'xmlstring'],
             ['content', 'set_children'],
             ['content', 'add_children'],
+            ['content', 'add_block'],
             ['content', 'value'],
         ]
     )
@@ -663,6 +677,7 @@ def main():
     attribute = module.params['attribute']
     set_children = decode(module.params['set_children'])
     add_children = decode(module.params['add_children'])
+    add_block = decode(module.params['add_block'])
     pretty_print = module.params['pretty_print']
     content = module.params['content']
     input_type = module.params['input_type']
@@ -720,6 +735,10 @@ def main():
     # add_children set?
     if add_children:
         add_target_children(module, x, xpath, namespaces, add_children, input_type)
+
+    # add_children set?
+    if add_block:
+        add_target_block(module, x, xpath, namespaces, add_block)
 
     # No?: Carry on
 

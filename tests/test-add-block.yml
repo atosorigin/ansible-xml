@@ -1,0 +1,17 @@
+---
+  - name: Setup test fixture
+    copy:
+      src: fixtures/ansible-xml-beers.xml
+      dest: /tmp/ansible-xml-beers.xml
+
+  - name: Add block
+    xml:
+      path: /tmp/ansible-xml-beers.xml
+      xpath: /business
+      add_block: |
+        <social-media>
+          <twitter handle="@tastybev_dtr"></twitter>
+        </social-media>
+
+  - name: Test expected result
+    command: diff results/test-add-block.xml /tmp/ansible-xml-beers.xml
