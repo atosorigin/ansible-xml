@@ -1,0 +1,24 @@
+---
+  - name: Setup test fixture
+    copy:
+      src: fixtures/ansible-xml-datasources.xml
+      dest: /tmp/ansible-xml-datasources.xml
+
+  - name: Add child element
+    xml:
+      path: /tmp/ansible-xml-datasources.xml
+      xpath: /datasources
+      add_children:
+          - datasource:
+              jndi-name: "java:jboss/datasources/ExampleDS"
+
+  - name: Set '/datasources/datasource[1]/@jndi-name' to 'java:jboss/datasources/FoobarDS'
+    xml:
+      path: /tmp/ansible-xml-datasources.xml
+      xpath: /datasources/datasource[1]
+      attribute: jndi-name
+      value: "java:jboss/datasources/FoobarDS"
+
+  - name: Test expected result
+    command: diff results/test-datasources-set-attribute-value.xml /tmp/ansible-xml-datasources.xml
+    changed_when: no

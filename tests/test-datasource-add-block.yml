@@ -90,4 +90,4 @@
         - hits.count == 1
 
   - name: Test expected result
-    command: diff results/test-add-block.xml /tmp/ansible-xml-beers.xml
+    command: diff results/test-datasources-add-block.xml /tmp/ansible-xml-datasources.xml

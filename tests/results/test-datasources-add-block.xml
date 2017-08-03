@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<datasources><datasource jndi-name="java:jboss/datasources/DABAG_CI02" pool-name="DABAG_CI02_DS" enabled="true" use-java-context="true">
+<datasources>
+<datasource jndi-name="java:jboss/datasources/DABAG_CI02" pool-name="DABAG_CI02_DS" enabled="true" use-java-context="true">
   <connection-url>jdbc:oracle:thin:@RU1-CFT02-DB:1521/PDBCFT02</connection-url>
   <driver>oracle</driver>
   <pool>

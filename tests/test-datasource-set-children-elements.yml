@@ -1,0 +1,30 @@
+---
+  - name: Setup test fixture
+    copy:
+      src: fixtures/ansible-xml-datasources.xml
+      dest: /tmp/ansible-xml-datasources.xml
+
+  - name: Add child element with xml format
+    xml:
+      path: /tmp/ansible-xml-datasources.xml
+      xpath: /datasources
+      input_type: xml
+      add_children:
+        - |
+          <datasource jndi-name="java:jboss/datasources/ExampleDS" pool-name="ExampleDS" enabled="true" use-java-context="true">
+              <connection-url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE</connection-url>
+              <driver>h2</driver>
+              <security>
+                  <user-name>sa</user-name>
+                  <password>sa</password>
+              </security>
+          </datasource>
+
+  - name: Remove all children from the datasources element
+    xml:
+      path: /tmp/ansible-xml-datasources.xml
+      xpath: /datasources/*
+      state: absent
+
+  - name: Test expected result
+    command: diff results/test-datasources-set-children-elements.xml /tmp/ansible-xml-datasources.xml

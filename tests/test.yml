@@ -8,7 +8,6 @@
 
   tasks:
     - include: test-add-block.yml
-    - include: test-add-block-datasources.yml
     - include: test-add-children-elements.yml
     - include: test-add-children-from-groupvars.yml
     - include: test-add-children-with-attributes.yml
@@ -40,4 +39,17 @@
     - include: test-get-element-content.yml
     - include: test-set-children-elements-unicode.yml
     - include: test-set-element-value-unicode.yml
+
+    # Datasource test
+    - include: test-datasource-add-block.yml
+    - include: test-datasource-add-children-elements.yml # 1 function to create element with value in specified xpath
+    - include: test-datasource-add-children-with-attributes.yml # 2 function to create attribute with value in specified xpath
+    - include: test-datasource-set-element-value.yml # 3 function to modify element in specified xpath
+    - include: test-datasource-set-attribute-value.yml # 4 function to modify attribute in specified xpath
+    - include: test-datasource-remove-attribute.yml # 5 function to remove attribute in specified xpath
+    - include: test-datasource-remove-element.yml # 6 function to remove element in specified xpath
+    - include: test-datasource-children-elements-xml.yml # 7 function to create full raw element in specified xpath, (as value raw xml element tree <element_name>element_value</element_name>)
+    - include: test-datasource-set-children-elements.yml # 8 function to remove full raw element in specified xpath (as value raw xml element tree <element_name>*</element_name>)
+                                                         #    * means that everythig inside the element will be erased
+
 ...

@@ -1,0 +1,22 @@
+---
+  - name: Setup test fixture
+    copy:
+      src: fixtures/ansible-xml-datasources.xml
+      dest: /tmp/ansible-xml-datasources.xml
+
+  - name: Add child element
+    xml:
+      path: /tmp/ansible-xml-datasources.xml
+      xpath: /datasources
+      add_children:
+          - datasource:
+              jndi-name: "java:jboss/datasources/ExampleDS"
+
+  - name: Remove '/datasources/datasource'
+    xml:
+      path: /tmp/ansible-xml-datasources.xml
+      xpath: /datasources/datasource
+      state: absent
+
+  - name: Test expected result
+    command: diff results/test-datasources-remove-element.xml /tmp/ansible-xml-datasources.xml
