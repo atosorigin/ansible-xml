@@ -1,0 +1,42 @@
+---
+  - name: Setup test fixture
+    command: cp fixtures/ansible-xml-namespaced-beers.xml /tmp/ansible-xml-namespaced-beers.xml
+
+  - name: Set child elements
+    xml:
+      path: /tmp/ansible-xml-namespaced-beers-xml.xml
+      xpath: /bus:business/ber:beers
+      namespaces:
+        bus: http://test.business
+        ber: http://test.beers
+      set_children:
+        - beer: "90 Minute IPA"
+        - beer: "Harvest Pumpkin Ale"
+
+  - name: Copy state after first set_children
+    command: cp /tmp/ansible-xml-namespaced-beers.xml /tmp/ansible-xml-namespaced-beers-1.xml
+
+  - name: Set child elements
+    xml:
+      path: /tmp/ansible-xml-namespaced-beers-xml.xml
+      xpath: /bus:business/ber:beers
+      namespaces:
+        bus: http://test.business
+        ber: http://test.beers
+      set_children:
+        - beer: "90 Minute IPA"
+        - beer: "Harvest Pumpkin Ale"
+    register: set_children_again
+
+  - name: Copy state after second set_children
+    command: cp /tmp/ansible-xml-namespaced-beers.xml /tmp/ansible-xml-namespaced-beers-2.xml
+
+  - name: Compare states after both set calls
+    command: diff /tmp/ansible-xml-namespaced-beers-1.xml /tmp/ansible-xml-namespaced-beers-2.xml
+    register: result_diff
+
+  - debug: var=result_diff
+
+  - fail:
+      msg: "Setting children is not idempotent!"
+    when: set_children_again.changed
